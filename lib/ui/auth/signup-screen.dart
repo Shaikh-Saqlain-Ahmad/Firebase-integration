@@ -85,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ontap: () {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      loading = true;
+                      loading = true; //jb button tap ho tou loading hogi
                     });
                     _auth
                         .createUserWithEmailAndPassword(
@@ -93,12 +93,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             password: passwordController.text.toString())
                         .then((value) {
                       setState(() {
-                        loading = false;
+                        loading = false; //hojaye tou loader nhi show hoga
                       });
                     }).onError((error, stackTrace) {
                       Utils().toastMessage(error.toString());
                       setState(() {
-                        loading = false;
+                        loading =
+                            false; //jb error throw hoga tou loader stop hojaega
                       });
                     });
                   }

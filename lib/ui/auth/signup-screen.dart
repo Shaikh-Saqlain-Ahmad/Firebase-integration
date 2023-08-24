@@ -1,6 +1,9 @@
 import 'package:firebase/ui/auth/login-screen.dart';
 import 'package:firebase/widgets/round-button.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../utils/utilities.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -10,10 +13,13 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  bool loading = false;
   final _formKey =
       GlobalKey<FormState>(); //to validate whether the field is empty or not
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  FirebaseAuth _auth =
+      FirebaseAuth.instance; //fire base auth ka object utha rhe for usage
   @override
   void dispose() {
     super.dispose();
@@ -74,9 +80,28 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 50,
               ),
               RoundButton(
-                title: 'Login',
+                title: 'Sign Up',
+                loading: loading,
                 ontap: () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      loading = true;
+                    });
+                    _auth
+                        .createUserWithEmailAndPassword(
+                            email: emailController.text.toString(),
+                            password: passwordController.text.toString())
+                        .then((value) {
+                      setState(() {
+                        loading = false;
+                      });
+                    }).onError((error, stackTrace) {
+                      Utils().toastMessage(error.toString());
+                      setState(() {
+                        loading = false;
+                      });
+                    });
+                  }
                 },
               ),
               SizedBox(

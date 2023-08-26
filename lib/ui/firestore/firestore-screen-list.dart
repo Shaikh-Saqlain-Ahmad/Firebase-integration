@@ -19,6 +19,8 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
   final auth = FirebaseAuth.instance;
   // final searchFilter = TextEditingController();
   final editController = TextEditingController();
+  final firestore =
+      FirebaseFirestore.instance.collection('students').snapshots();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,14 +52,26 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
           SizedBox(
             height: 20,
           ),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, Index) {
-                    return ListTile(
-                      title: Text('shuff'),
-                    );
-                  }))
+          StreamBuilder<QuerySnapshot>(
+              stream: firestore,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text('Encountered some error');
+                }
+                return Expanded(
+                    child: ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, Index) {
+                          return ListTile(
+                            title: Text(
+                                snapshot.data!.docs[Index]['name'].toString()),
+                          );
+                        }));
+              }),
         ],
       ),
       floatingActionButton: FloatingActionButton(

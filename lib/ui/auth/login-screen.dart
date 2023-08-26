@@ -1,3 +1,4 @@
+import 'package:firebase/ui/firestore/firestore-screen-list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -5,7 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../../utils/utilities.dart';
 import '../../widgets/round-button.dart';
-import '../posts/post-screen.dart';
+
 import 'signup-screen.dart';
 import 'login-with-number.dart';
 
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Post(),
+          builder: (context) => FirestoreScreen(),
         ),
       );
       setState(() {

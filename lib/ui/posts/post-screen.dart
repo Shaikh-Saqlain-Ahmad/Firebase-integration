@@ -17,6 +17,7 @@ class _PostState extends State<Post> {
   final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref('Students');
   final searchFilter = TextEditingController();
+  final editController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +74,28 @@ class _PostState extends State<Post> {
                     title:
                         Text(snapshot.child('Student name').value.toString()),
                     subtitle: Text(snapshot.child('id').value.toString()),
+                    trailing: PopupMenuButton(
+                      icon: Icon(Icons.more_vert),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                            value: 1,
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.pop(context);
+                                showMyDialog(title,
+                                    snapshot.child('id').value.toString());
+                              },
+                              leading: Icon(Icons.edit),
+                              title: Text('Edit'),
+                            )),
+                        PopupMenuItem(
+                            value: 1,
+                            child: ListTile(
+                              leading: Icon(Icons.delete),
+                              title: Text('Delete'),
+                            ))
+                      ],
+                    ),
                   );
                 } else if (title
                     .toLowerCase()
@@ -101,5 +124,41 @@ class _PostState extends State<Post> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> showMyDialog(String title, String id) async {
+    editController.text = title;
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Update'),
+            content: Container(
+              child: TextField(
+                controller: editController,
+                decoration: InputDecoration(hintText: 'Edit here'),
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    ref.child(id).update({
+                      'Student name': editController.text.toLowerCase()
+                    }).then((value) {
+                      Utils().toastMessage('Entry Updated');
+                    }).onError((error, stackTrace) {
+                      Utils().toastMessage(error.toString());
+                    });
+                  },
+                  child: Text('Update'))
+            ],
+          );
+        });
   }
 }

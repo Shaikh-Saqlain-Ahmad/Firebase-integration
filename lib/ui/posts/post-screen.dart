@@ -2,6 +2,8 @@ import 'package:firebase/ui/auth/login-screen.dart';
 import 'package:firebase/ui/posts/add-post.dart';
 import 'package:firebase/utils/utilities.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class Post extends StatefulWidget {
@@ -13,6 +15,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   final auth = FirebaseAuth.instance;
+  final ref = FirebaseDatabase.instance.ref('Students');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +38,22 @@ class _PostState extends State<Post> {
           SizedBox(
             width: 20,
           )
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            //takee size error naa aye
+            child: FirebaseAnimatedList(
+              query: ref,
+              itemBuilder: (context, snapshot, animation, index) {
+                return ListTile(
+                  title: Text(snapshot.child('Student name').value.toString()),
+                  subtitle: Text(snapshot.child('id').value.toString()),
+                );
+              },
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

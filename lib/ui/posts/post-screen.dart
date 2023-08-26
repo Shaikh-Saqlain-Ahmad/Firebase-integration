@@ -16,10 +16,13 @@ class Post extends StatefulWidget {
 class _PostState extends State<Post> {
   final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref('Students');
+  final searchFilter = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text('Post screen'),
         actions: [
           IconButton(
@@ -42,15 +45,46 @@ class _PostState extends State<Post> {
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: TextFormField(
+              controller: searchFilter,
+              decoration: InputDecoration(
+                hintText: 'Search ',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (String value) {
+                setState(() {});
+              },
+            ),
+          ),
           Expanded(
             //takee size error naa aye
             child: FirebaseAnimatedList(
               query: ref,
               itemBuilder: (context, snapshot, animation, index) {
-                return ListTile(
-                  title: Text(snapshot.child('Student name').value.toString()),
-                  subtitle: Text(snapshot.child('id').value.toString()),
-                );
+                final title = snapshot.child('Student name').value.toString();
+
+                if (searchFilter.text.isEmpty) {
+                  return ListTile(
+                    title:
+                        Text(snapshot.child('Student name').value.toString()),
+                    subtitle: Text(snapshot.child('id').value.toString()),
+                  );
+                } else if (title
+                    .toLowerCase()
+                    .contains(searchFilter.text.toLowerCase().toLowerCase())) {
+                  return ListTile(
+                    title:
+                        Text(snapshot.child('Student name').value.toString()),
+                    subtitle: Text(snapshot.child('id').value.toString()),
+                  );
+                } else {
+                  return Container();
+                }
               },
             ),
           ),

@@ -75,12 +75,13 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                       hintText: 'Fixed Value',
                       border: OutlineInputBorder(),
                     ),
-                    readOnly: true, // Make it read-only
+                    readOnly: true,
                   ),
                   SizedBox(
                     height: 30,
                   ),
                   TextFormField(
+                    keyboardType: TextInputType.number,
                     controller: classesHeldController,
                     decoration: InputDecoration(
                       hintText: 'Enter total classes held',
@@ -96,6 +97,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     height: 30,
                   ),
                   TextFormField(
+                    keyboardType: TextInputType.number,
                     controller: classesTaken,
                     decoration: InputDecoration(
                       hintText: 'Enter total classes taken',

@@ -51,10 +51,12 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                     decoration: InputDecoration(hintText: 'Edit here'),
                   ),
                   TextField(
+                    keyboardType: TextInputType.number,
                     controller: classesHeldController,
                     decoration: InputDecoration(hintText: 'Edit here'),
                   ),
                   TextField(
+                    keyboardType: TextInputType.number,
                     controller: classesTaken,
                     decoration: InputDecoration(hintText: 'Edit here'),
                   ),
@@ -102,7 +104,10 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                       },
                       child: Text('Update'),
                     )
-                  : Text('Upda22222')
+                  : Text(
+                      'Update',
+                      style: TextStyle(color: Colors.black),
+                    )
             ],
           );
         });

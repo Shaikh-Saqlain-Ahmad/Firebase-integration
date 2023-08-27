@@ -10,13 +10,23 @@ class Splashservices {
     final auth = FirebaseAuth.instance;
     final user = auth.currentUser;
     if (user != null) {
-      Timer(
-          const Duration(seconds: 3),
-          () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FirestoreScreen(),
-              )));
+      if (user.uid == '3CrTZlCZOLdkeIAZrgvR9AePRwX2') {
+        Timer(
+            const Duration(seconds: 3),
+            () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FirestoreScreen(),
+                )));
+      } else {
+        Timer(
+            const Duration(seconds: 3),
+            () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginScreen(),
+                )));
+      }
     } else {
       Timer(
           const Duration(seconds: 3),

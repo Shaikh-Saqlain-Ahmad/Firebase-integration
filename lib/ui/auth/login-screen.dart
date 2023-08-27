@@ -1,14 +1,26 @@
-import 'package:firebase/ui/firestore/firestore-screen-list.dart';
+import 'package:firebase/ui/firestore/student-data.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/services.dart';
-
 import '../../utils/utilities.dart';
 import '../../widgets/round-button.dart';
-
+import '../firestore/firestore-screen-list.dart';
 import 'signup-screen.dart';
 import 'login-with-number.dart';
+
+class OtherScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Other Screen'),
+      ),
+      body: Center(
+        child: Text('You are on the other screen.'),
+      ),
+    );
+  }
+}
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -36,12 +48,24 @@ class _LoginScreenState extends State<LoginScreen> {
     )
         .then((value) {
       Utils().toastMessage(value.user!.email.toString());
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FirestoreScreen(),
-        ),
-      );
+
+      if (value.user!.uid == '3CrTZlCZOLdkeIAZrgvR9AePRwX2') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FirestoreScreen(),
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                StudentData(email: value.user!.email.toString()),
+          ),
+        );
+      }
+
       setState(() {
         loading = false;
       });

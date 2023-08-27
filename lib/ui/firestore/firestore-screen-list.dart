@@ -14,13 +14,21 @@ class FirestoreScreen extends StatefulWidget {
 }
 
 class _FirestoreScreenState extends State<FirestoreScreen> {
+  bool calculateClicked = false;
   final auth = FirebaseAuth.instance;
+
   final classesHeldController = TextEditingController();
   final classesTaken = TextEditingController();
   final editController = TextEditingController();
   final attendanceupdateController = TextEditingController();
   final firestore =
       FirebaseFirestore.instance.collection('students').snapshots();
+  void updateAttendance() {
+    int classestaken = int.tryParse(classesTaken.text) ?? 0;
+    int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+    double percentage = (classestaken / classesHeld) * 100;
+    attendanceupdateController.text = percentage.toString();
+  }
 
   Future<void> showMyDialog(String title, String id, String classheld,
       String classtaken, String attendance) async {
@@ -32,65 +40,72 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Update'),
-          content: Container(
-            child: Column(
-              children: [
-                TextField(
-                  controller: editController,
-                  decoration: InputDecoration(hintText: 'Edit here'),
-                ),
-                TextField(
-                  controller: classesHeldController,
-                  decoration: InputDecoration(hintText: 'Edit here'),
-                ),
-                TextField(
-                  controller: classesTaken,
-                  decoration: InputDecoration(hintText: 'Edit here'),
-                ),
-                TextField(
-                  controller: attendanceupdateController,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                    icon: Icon(Icons.calculate),
-                    onPressed: () {
-                      updateAttendance();
-                    },
-                  )),
-                ),
-              ],
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Update'),
+            content: Container(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: editController,
+                    decoration: InputDecoration(hintText: 'Edit here'),
+                  ),
+                  TextField(
+                    controller: classesHeldController,
+                    decoration: InputDecoration(hintText: 'Edit here'),
+                  ),
+                  TextField(
+                    controller: classesTaken,
+                    decoration: InputDecoration(hintText: 'Edit here'),
+                  ),
+                  TextField(
+                    controller: attendanceupdateController,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                      icon: Icon(Icons.calculate),
+                      onPressed: () {
+                        updateAttendance();
+                        setState(() {
+                          calculateClicked = true;
+                        });
+                      },
+                    )),
+                  ),
+                ],
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                try {
+            actions: [
+              TextButton(
+                onPressed: () {
                   Navigator.pop(context);
-                  await FirebaseFirestore.instance
-                      .collection('students')
-                      .doc(id)
-                      .update({
-                    'name': editController.text,
-                    'classheld': classesHeldController.text,
-                    'classtaken': classesTaken.text,
-                    'percentage': attendanceupdateController.text
-                  });
-                  Utils().toastMessage('Updated');
-                } catch (error) {
-                  Utils().toastMessage(error.toString());
-                }
-              },
-              child: Text('Update'),
-            ),
-          ],
-        );
+                },
+                child: Text('Cancel'),
+              ),
+              calculateClicked
+                  ? TextButton(
+                      onPressed: () async {
+                        try {
+                          Navigator.pop(context);
+                          await FirebaseFirestore.instance
+                              .collection('students')
+                              .doc(id)
+                              .update({
+                            'name': editController.text,
+                            'classheld': classesHeldController.text,
+                            'classtaken': classesTaken.text,
+                            'percentage': attendanceupdateController.text,
+                          });
+                          Utils().toastMessage('Updated');
+                        } catch (error) {
+                          Utils().toastMessage(error.toString());
+                        }
+                      },
+                      child: Text('Update'),
+                    )
+                  : Text('Upda22222')
+            ],
+          );
+        });
       },
     );
   }
@@ -177,6 +192,9 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                     return ListTile(
                       title:
                           Text(snapshot.data!.docs[index]['name'].toString()),
+                      subtitle: Text(
+                          snapshot.data!.docs[index]['percentage'].toString() +
+                              '%'),
                       onTap: () {
                         showMyDialog(
                           snapshot.data!.docs[index]['name'].toString(),
@@ -209,12 +227,5 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
         child: Icon(Icons.add),
       ),
     );
-  }
-
-  void updateAttendance() {
-    int classestaken = int.tryParse(classesTaken.text) ?? 0;
-    int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
-    double percentage = (classestaken / classesHeld) * 100;
-    attendanceupdateController.text = percentage.toString();
   }
 }

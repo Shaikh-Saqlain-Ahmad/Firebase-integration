@@ -14,7 +14,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final postController = TextEditingController();
-  final emailController = TextEditingController();
+  final emailController2 = TextEditingController();
   final classesHeldController = TextEditingController();
   final classesTaken = TextEditingController();
   final attendanceController = TextEditingController();
@@ -53,7 +53,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     height: 30,
                   ),
                   TextFormField(
-                    controller: emailController,
+                    controller: emailController2,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'Enter student Email',
@@ -121,6 +121,9 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                       icon: Icon(Icons.calculate),
                     )),
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   RoundButton(
                       title: "Add",
                       loading: isLoading,
@@ -134,10 +137,18 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                           firestore.doc(id).set({
                             'name': postController.text.toString(),
                             'id': id,
-                            'email': emailController.text.toString(),
+                            'email': emailController2.text.toString(),
+                            'classheld': classesHeldController.text.toString(),
+                            'classtaken': classesTaken.text.toString(),
+                            'percentage': attendanceController.text.toString(),
                           }).then((value) {
                             setState(() {
                               isLoading = false;
+                              postController.clear();
+                              emailController2.clear();
+                              classesHeldController.clear();
+                              classesTaken.clear();
+                              attendanceController.clear();
                             });
                             Utils().toastMessage('Student added');
                           }).onError((error, stackTrace) {

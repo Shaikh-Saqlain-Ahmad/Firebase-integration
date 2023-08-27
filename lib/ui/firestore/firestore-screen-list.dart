@@ -15,12 +15,19 @@ class FirestoreScreen extends StatefulWidget {
 
 class _FirestoreScreenState extends State<FirestoreScreen> {
   final auth = FirebaseAuth.instance;
+  final classesHeldController = TextEditingController();
+  final classesTaken = TextEditingController();
   final editController = TextEditingController();
+  final attendanceupdateController = TextEditingController();
   final firestore =
       FirebaseFirestore.instance.collection('students').snapshots();
 
-  Future<void> showMyDialog(String title, String id) async {
+  Future<void> showMyDialog(String title, String id, String classheld,
+      String classtaken, String attendance) async {
     editController.text = title;
+    classesHeldController.text = classheld;
+    classesTaken.text = classtaken;
+    attendanceupdateController.text = attendance;
 
     await showDialog(
       context: context,
@@ -28,9 +35,31 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
         return AlertDialog(
           title: Text('Update'),
           content: Container(
-            child: TextField(
-              controller: editController,
-              decoration: InputDecoration(hintText: 'Edit here'),
+            child: Column(
+              children: [
+                TextField(
+                  controller: editController,
+                  decoration: InputDecoration(hintText: 'Edit here'),
+                ),
+                TextField(
+                  controller: classesHeldController,
+                  decoration: InputDecoration(hintText: 'Edit here'),
+                ),
+                TextField(
+                  controller: classesTaken,
+                  decoration: InputDecoration(hintText: 'Edit here'),
+                ),
+                TextField(
+                  controller: attendanceupdateController,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                    icon: Icon(Icons.calculate),
+                    onPressed: () {
+                      updateAttendance();
+                    },
+                  )),
+                ),
+              ],
             ),
           ),
           actions: [
@@ -49,6 +78,9 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                       .doc(id)
                       .update({
                     'name': editController.text,
+                    'classheld': classesHeldController.text,
+                    'classtaken': classesTaken.text,
+                    'percentage': attendanceupdateController.text
                   });
                   Utils().toastMessage('Updated');
                 } catch (error) {
@@ -149,6 +181,9 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                         showMyDialog(
                           snapshot.data!.docs[index]['name'].toString(),
                           snapshot.data!.docs[index].id,
+                          snapshot.data!.docs[index]['classheld'].toString(),
+                          snapshot.data!.docs[index]['classtaken'].toString(),
+                          snapshot.data!.docs[index]['percentage'].toString(),
                         );
                       },
                       onLongPress: () {
@@ -174,5 +209,12 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void updateAttendance() {
+    int classestaken = int.tryParse(classesTaken.text) ?? 0;
+    int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+    double percentage = (classestaken / classesHeld) * 100;
+    attendanceupdateController.text = percentage.toString();
   }
 }

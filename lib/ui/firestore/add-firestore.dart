@@ -12,7 +12,13 @@ class AddFirestoreData extends StatefulWidget {
 
 class _AddFirestoreDataState extends State<AddFirestoreData> {
   bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
   final postController = TextEditingController();
+  final emailController = TextEditingController();
+  final classesHeldController = TextEditingController();
+  final classesTaken = TextEditingController();
+  final attendanceController = TextEditingController();
+
   final firestore = FirebaseFirestore.instance.collection('students');
   @override
   Widget build(BuildContext context) {
@@ -20,46 +26,141 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
       appBar: AppBar(title: Text('Add Firestore Data')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 30,
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: postController,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                        hintText: 'Enter Student name',
+                        border: OutlineInputBorder()),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter Student name';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      hintText: 'Enter student Email',
+                      prefixIcon: Icon(Icons.email),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter email';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: TextEditingController(text: '50'),
+                    decoration: InputDecoration(
+                      hintText: 'Fixed Value',
+                      border: OutlineInputBorder(),
+                    ),
+                    readOnly: true, // Make it read-only
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: classesHeldController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter total classes held',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter classes held';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: classesTaken,
+                    decoration: InputDecoration(
+                      hintText: 'Enter total classes taken',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter classes taken';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    controller: attendanceController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                      onPressed: () {
+                        calculateAndDisplay();
+                      },
+                      icon: Icon(Icons.calculate),
+                    )),
+                  ),
+                  RoundButton(
+                      title: "Add",
+                      loading: isLoading,
+                      ontap: () {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          String id =
+                              DateTime.now().millisecondsSinceEpoch.toString();
+                          firestore.doc(id).set({
+                            'name': postController.text.toString(),
+                            'id': id,
+                            'email': emailController.text.toString(),
+                          }).then((value) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Utils().toastMessage('Student added');
+                          }).onError((error, stackTrace) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Utils().toastMessage(error.toString());
+                          });
+                        }
+                      })
+                ],
+              ),
             ),
-            TextFormField(
-              controller: postController,
-              maxLines: 2,
-              decoration: InputDecoration(
-                  hintText: 'Add', border: OutlineInputBorder()),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            RoundButton(
-                title: "Add",
-                loading: isLoading,
-                ontap: () {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  String id = DateTime.now().millisecondsSinceEpoch.toString();
-                  firestore.doc(id).set({
-                    'name': postController.text.toString(),
-                    'id': id
-                  }).then((value) {
-                    setState(() {
-                      isLoading = false;
-                    });
-                    Utils().toastMessage('Student added');
-                  }).onError((error, stackTrace) {
-                    setState(() {
-                      isLoading = false;
-                    });
-                    Utils().toastMessage(error.toString());
-                  });
-                })
-          ],
+          ),
         ),
       ),
     );
+  }
+
+  void calculateAndDisplay() {
+    int classestaken = int.tryParse(classesTaken.text) ?? 0;
+    int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+    double percentage = (classestaken / classesHeld) * 100;
+    attendanceController.text = percentage.toString();
   }
 }

@@ -93,92 +93,96 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('AttendEaze'),
+          title: Text(
+            'AttendEaze',
+            style: TextStyle(fontSize: 25),
+          ),
           centerTitle: true,
           automaticallyImplyLeading: false,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                  height: 200,
-                  width: 200,
-                  child: Image.asset('assets/logo.png')),
-              Form(
-                key: _formKey,
-                child: Column(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    height: 200,
+                    width: 200,
+                    child: Image.asset('assets/logo.png')),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          prefixIcon: Icon(Icons.email),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter email';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          prefixIcon: Icon(Icons.lock),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter password';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 50),
+                RoundButton(
+                  title: 'Login',
+                  loading: loading,
+                  ontap: () {
+                    if (_formKey.currentState!.validate()) {
+                      login();
+                    }
+                  },
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextFormField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                        prefixIcon: Icon(Icons.email),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter email';
-                        }
-                        return null;
+                    Text('Don\'t have an account?'),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignupScreen(),
+                          ),
+                        );
                       },
-                    ),
-                    SizedBox(height: 20),
-                    TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
+                      child: Text(
+                        'Sign up',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter password';
-                        }
-                        return null;
-                      },
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 50),
-              RoundButton(
-                title: 'Login',
-                loading: loading,
-                ontap: () {
-                  if (_formKey.currentState!.validate()) {
-                    login();
-                  }
-                },
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Don\'t have an account?'),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignupScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Sign up',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-            ],
+                SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),

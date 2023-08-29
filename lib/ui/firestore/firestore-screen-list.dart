@@ -157,7 +157,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text('FireStore screen'),
+        title: Text('Students Record'),
         actions: [
           IconButton(
             onPressed: () {
@@ -191,31 +191,33 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                 return Text('Encountered some error');
               }
               return Expanded(
-                child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title:
-                          Text(snapshot.data!.docs[index]['name'].toString()),
-                      subtitle: Text(
-                          snapshot.data!.docs[index]['percentage'].toString() +
-                              '%'),
-                      onTap: () {
-                        showMyDialog(
-                          snapshot.data!.docs[index]['name'].toString(),
-                          snapshot.data!.docs[index].id,
-                          snapshot.data!.docs[index]['classheld'].toString(),
-                          snapshot.data!.docs[index]['classtaken'].toString(),
-                          snapshot.data!.docs[index]['percentage'].toString(),
-                        );
-                      },
-                      onLongPress: () {
-                        showMyWarning(snapshot.data!.docs[index].id);
-                      },
-                    );
-                  },
+                  child: ListView.separated(
+                itemCount: snapshot.data!.docs.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  color: Colors.grey, // Customize the divider color here
                 ),
-              );
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data!.docs[index]['name'].toString()),
+                    subtitle: Text(
+                        snapshot.data!.docs[index]['percentage'].toString() +
+                            '%'),
+                    onTap: () {
+                      showMyDialog(
+                        snapshot.data!.docs[index]['name'].toString(),
+                        snapshot.data!.docs[index].id,
+                        snapshot.data!.docs[index]['classheld'].toString(),
+                        snapshot.data!.docs[index]['classtaken'].toString(),
+                        snapshot.data!.docs[index]['percentage'].toString(),
+                      );
+                    },
+                    onLongPress: () {
+                      showMyWarning(snapshot.data!.docs[index].id);
+                    },
+                  );
+                },
+              ));
             },
           ),
         ],

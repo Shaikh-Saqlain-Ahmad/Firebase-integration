@@ -23,7 +23,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Firestore Data')),
+      appBar: AppBar(title: Text('Add Student')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
@@ -70,22 +70,11 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     height: 30,
                   ),
                   TextFormField(
-                    controller: TextEditingController(text: '50'),
-                    decoration: InputDecoration(
-                      hintText: 'Fixed Value',
-                      border: OutlineInputBorder(),
-                    ),
-                    readOnly: true,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  TextFormField(
                     keyboardType: TextInputType.number,
                     controller: classesHeldController,
                     decoration: InputDecoration(
-                      hintText: 'Enter total classes held',
-                    ),
+                        hintText: 'Enter total classes held',
+                        prefixIcon: Icon(Icons.numbers)),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Enter classes held';
@@ -100,8 +89,8 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     keyboardType: TextInputType.number,
                     controller: classesTaken,
                     decoration: InputDecoration(
-                      hintText: 'Enter total classes taken',
-                    ),
+                        hintText: 'Enter total classes taken',
+                        prefixIcon: Icon(Icons.numbers)),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Enter classes taken';
@@ -122,6 +111,12 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                       },
                       icon: Icon(Icons.calculate),
                     )),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter attendance';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(
                     height: 30,
@@ -129,11 +124,25 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                   RoundButton(
                       title: "Add",
                       loading: isLoading,
-                      ontap: () {
+                      ontap: () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() {
                             isLoading = true;
                           });
+
+                          QuerySnapshot existingStudents = await firestore
+                              .where('email',
+                                  isEqualTo: emailController2.text.toString())
+                              .get();
+
+                          if (existingStudents.docs.isNotEmpty) {
+                            Utils().toastMessage(
+                                'A student with the same email already exists');
+                            setState(() {
+                              isLoading = false;
+                            });
+                            return;
+                          }
                           String id =
                               DateTime.now().millisecondsSinceEpoch.toString();
                           firestore.doc(id).set({
@@ -173,7 +182,22 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
   void calculateAndDisplay() {
     int classestaken = int.tryParse(classesTaken.text) ?? 0;
     int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+
+    if (classesHeld == 0) {
+      Utils().toastMessage('Total classes held cannot be 0');
+      return;
+    }
+
     double percentage = (classestaken / classesHeld) * 100;
-    attendanceController.text = percentage.toString();
+
+    if (percentage < 0) {
+      Utils().toastMessage('Percentage cannot be negative');
+      return;
+    } else if (percentage > 100) {
+      Utils().toastMessage('Percentage cannot be greater than 100');
+      return;
+    }
+
+    attendanceController.text = percentage.toStringAsFixed(2);
   }
 }

@@ -26,8 +26,23 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
   void updateAttendance() {
     int classestaken = int.tryParse(classesTaken.text) ?? 0;
     int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+
+    if (classesHeld == 0) {
+      Utils().toastMessage('Total classes held cannot be 0');
+      return;
+    }
+
     double percentage = (classestaken / classesHeld) * 100;
-    attendanceupdateController.text = percentage.toString();
+
+    if (percentage < 0) {
+      Utils().toastMessage('Percentage cannot be negative');
+      return;
+    } else if (percentage > 100) {
+      Utils().toastMessage('Percentage cannot be greater than 100');
+      return;
+    }
+
+    attendanceupdateController.text = percentage.toStringAsFixed(2);
   }
 
   Future<void> showMyDialog(String title, String id, String classheld,

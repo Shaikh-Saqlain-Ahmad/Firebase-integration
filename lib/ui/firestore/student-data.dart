@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/utilities.dart';
+import '../auth/login-screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class StudentData extends StatelessWidget {
+  final auth = FirebaseAuth.instance;
   final String email;
 
   StudentData({required this.email});
@@ -10,6 +15,41 @@ class StudentData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'logout') {
+                auth.signOut().then((value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  );
+                }).onError((error, stackTrace) {
+                  Utils().toastMessage(error.toString());
+                });
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return ['logout'].map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text('Logout'),
+                );
+              }).toList();
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.grey, // Set the desired background color
+              child: Icon(
+                Icons
+                    .supervised_user_circle_outlined, // Use the admin icon (replace with the actual icon you want)
+                color: Colors.white, // Set the desired icon color
+              ),
+            ),
+          ),
+          SizedBox(width: 20),
+        ],
         title: Text('Student Data'),
         centerTitle: true,
       ),

@@ -100,6 +100,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         setState(() {
                           loading = false; //hojaye tou loader nhi show hoga
                         });
+                        Utils().toastMessage('Account created');
                       }).onError((error, stackTrace) {
                         Utils().toastMessage(error.toString());
                         setState(() {

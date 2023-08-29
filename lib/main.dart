@@ -1,4 +1,5 @@
 import 'package:firebase/ui/splash-screen.dart';
+import 'package:firebase/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -16,11 +17,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: Splashscreen(),
+      theme: CustomTheme.lightTheme,
+      themeMode: ThemeMode.light,
+      home: const Splashscreen(),
     );
   }
 }

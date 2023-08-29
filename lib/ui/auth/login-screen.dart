@@ -93,7 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Login Screen'),
+          title: Text('AttendEaze'),
+          centerTitle: true,
           automaticallyImplyLeading: false,
         ),
         body: Padding(
@@ -102,6 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Container(
+                  height: 200,
+                  width: 200,
+                  child: Image.asset('assets/logo.png')),
               Form(
                 key: _formKey,
                 child: Column(

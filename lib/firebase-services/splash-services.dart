@@ -12,7 +12,7 @@ class Splashservices {
     if (user != null) {
       if (user.uid == '3CrTZlCZOLdkeIAZrgvR9AePRwX2') {
         Timer(
-            const Duration(seconds: 3),
+            const Duration(seconds: 5),
             () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -20,7 +20,7 @@ class Splashservices {
                 )));
       } else {
         Timer(
-            const Duration(seconds: 3),
+            const Duration(seconds: 5),
             () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -29,7 +29,7 @@ class Splashservices {
       }
     } else {
       Timer(
-          const Duration(seconds: 3),
+          const Duration(seconds: 5),
           () => Navigator.push(
               context,
               MaterialPageRoute(

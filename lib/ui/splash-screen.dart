@@ -19,7 +19,7 @@ class _SplashscreenState extends State<Splashscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Text('Firebase integration'),
+      child: Image.asset('assets/logo.gif'),
     ));
   }
 }

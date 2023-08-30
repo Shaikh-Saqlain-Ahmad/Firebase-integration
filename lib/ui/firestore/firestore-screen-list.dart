@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase/ui/auth/login-screen.dart';
 import 'package:firebase/utils/utilities.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'add-firestore.dart';
 
 class FirestoreScreen extends StatefulWidget {
@@ -113,6 +112,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                             'percentage': attendanceupdateController.text,
                           });
                           Utils().toastMessage('Updated');
+                          calculateClicked = false;
                         } catch (error) {
                           Utils().toastMessage(error.toString());
                         }

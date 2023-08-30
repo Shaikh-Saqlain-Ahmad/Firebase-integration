@@ -111,7 +111,6 @@ class StudentData extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      // ... display other fields
                     ],
                     // ),
                   ),
@@ -120,7 +119,10 @@ class StudentData extends StatelessWidget {
             );
           } else {
             return Center(
-              child: Text("No student data found."),
+              child: Text(
+                "No student data found.",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             );
           }
         },

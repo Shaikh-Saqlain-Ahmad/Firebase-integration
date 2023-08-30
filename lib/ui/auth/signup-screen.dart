@@ -101,6 +101,10 @@ class _SignupScreenState extends State<SignupScreen> {
                           loading = false; //hojaye tou loader nhi show hoga
                         });
                         Utils().toastMessage('Account created');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()));
                       }).onError((error, stackTrace) {
                         Utils().toastMessage(error.toString());
                         setState(() {

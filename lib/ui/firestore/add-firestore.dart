@@ -105,12 +105,13 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     controller: attendanceController,
                     readOnly: true,
                     decoration: InputDecoration(
+                        hintText: 'Click on icon for percentage',
                         suffixIcon: IconButton(
-                      onPressed: () {
-                        calculateAndDisplay();
-                      },
-                      icon: Icon(Icons.calculate),
-                    )),
+                          onPressed: () {
+                            calculateAndDisplay();
+                          },
+                          icon: Icon(Icons.calculate),
+                        )),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Enter attendance';

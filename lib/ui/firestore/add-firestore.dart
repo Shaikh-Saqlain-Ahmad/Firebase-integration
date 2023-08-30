@@ -20,6 +20,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
   final attendanceController = TextEditingController();
 
   final firestore = FirebaseFirestore.instance.collection('students');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -24,8 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     super.dispose();
     emailController.dispose();
-    passwordController
-        .dispose(); //to remove from memory after closing of screen
+    passwordController.dispose(); //memory se remove krdega
   }
 
   Widget build(BuildContext context) {

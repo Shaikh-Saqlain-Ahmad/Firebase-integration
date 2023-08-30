@@ -40,11 +40,10 @@ class StudentData extends StatelessWidget {
               }).toList();
             },
             child: CircleAvatar(
-              backgroundColor: Colors.grey, // Set the desired background color
+              backgroundColor: Colors.white,
               child: Icon(
-                Icons
-                    .supervised_user_circle_outlined, // Use the admin icon (replace with the actual icon you want)
-                color: Colors.white, // Set the desired icon color
+                Icons.person,
+                color: Color(0xff26aecb),
               ),
             ),
           ),

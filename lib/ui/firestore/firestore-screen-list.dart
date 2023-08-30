@@ -174,20 +174,36 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
         centerTitle: true,
         title: Text('Students Record'),
         actions: [
-          IconButton(
-            onPressed: () {
-              auth.signOut().then((value) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
-                  ),
-                );
-              }).onError((error, stackTrace) {
-                Utils().toastMessage(error.toString());
-              });
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'logout') {
+                auth.signOut().then((value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  );
+                }).onError((error, stackTrace) {
+                  Utils().toastMessage(error.toString());
+                });
+              }
             },
-            icon: Icon(Icons.logout),
+            itemBuilder: (BuildContext context) {
+              return ['logout'].map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text('Logout'),
+                );
+              }).toList();
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.verified_user,
+                color: Colors.green,
+              ),
+            ),
           ),
           SizedBox(width: 20),
         ],

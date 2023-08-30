@@ -6,7 +6,6 @@ import '../../utils/utilities.dart';
 import '../../widgets/round-button.dart';
 import '../firestore/firestore-screen-list.dart';
 import 'signup-screen.dart';
-import 'login-with-number.dart';
 
 class OtherScreen extends StatelessWidget {
   @override

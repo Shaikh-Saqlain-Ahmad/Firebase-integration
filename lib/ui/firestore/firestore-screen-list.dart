@@ -65,12 +65,14 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                     decoration: InputDecoration(hintText: 'Edit here'),
                   ),
                   TextField(
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: false),
                     controller: classesHeldController,
                     decoration: InputDecoration(hintText: 'Edit here'),
                   ),
                   TextField(
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: false),
                     controller: classesTaken,
                     decoration: InputDecoration(hintText: 'Edit here'),
                   ),
@@ -226,7 +228,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                 itemCount: snapshot.data!.docs.length,
                 separatorBuilder: (context, index) => Divider(
                   height: 1,
-                  color: Colors.grey, // Customize the divider color here
+                  color: Colors.grey,
                 ),
                 itemBuilder: (context, index) {
                   return ListTile(

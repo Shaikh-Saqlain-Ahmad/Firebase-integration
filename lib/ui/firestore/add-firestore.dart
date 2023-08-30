@@ -71,7 +71,8 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     height: 30,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: false),
                     controller: classesHeldController,
                     decoration: InputDecoration(
                         hintText: 'Enter total classes held',
@@ -87,7 +88,8 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     height: 30,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: false),
                     controller: classesTaken,
                     decoration: InputDecoration(
                         hintText: 'Enter total classes taken',

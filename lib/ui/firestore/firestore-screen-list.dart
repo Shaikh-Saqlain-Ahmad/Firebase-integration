@@ -26,6 +26,12 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
   void updateAttendance() {
     int classestaken = int.tryParse(classesTaken.text) ?? 0;
     int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+    if (classesTaken.text.contains('.') ||
+        classesHeldController.text.contains('.')) {
+      Utils().toastMessage(
+          'Please enter whole numbers for classes taken and classes held');
+      return;
+    }
 
     if (classesHeld == 0) {
       Utils().toastMessage('Total classes held cannot be 0');
@@ -43,6 +49,34 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
     }
 
     attendanceupdateController.text = percentage.toStringAsFixed(2);
+  }
+
+  void verifyAttendance() {
+    int classestaken = int.tryParse(classesTaken.text) ?? 0;
+    int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+    if (classesTaken.text.contains('.') ||
+        classesHeldController.text.contains('.')) {
+      Utils().toastMessage(
+          'Please enter whole numbers for classes taken and classes held');
+      return;
+    }
+
+    if (classesHeld == 0) {
+      Utils().toastMessage('Total classes held cannot be 0');
+      return;
+    }
+
+    double percentage = (classestaken / classesHeld) * 100;
+
+    if (percentage < 0) {
+      Utils().toastMessage('Percentage cannot be negative');
+      return;
+    } else if (percentage > 100) {
+      Utils().toastMessage('Percentage cannot be greater than 100');
+      return;
+    }
+
+    String attendance = percentage.toStringAsFixed(2);
   }
 
   Future<void> showMyDialog(String title, String id, String classheld,
@@ -114,6 +148,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                           icon: Icon(Icons.calculate),
                           onPressed: () {
                             updateAttendance();
+
                             setState(() {
                               calculateClicked = true;
                             });
@@ -141,7 +176,9 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
               calculateClicked
                   ? TextButton(
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
+                        verifyAttendance();
+                        if (_formKey.currentState!.validate() &&
+                            attendance != attendanceupdateController.text) {
                           try {
                             Navigator.pop(context);
                             await FirebaseFirestore.instance
@@ -158,6 +195,8 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                           } catch (error) {
                             Utils().toastMessage(error.toString());
                           }
+                        } else {
+                          Utils().toastMessage("please update attendance");
                         }
                       },
                       child: Text('Update'),

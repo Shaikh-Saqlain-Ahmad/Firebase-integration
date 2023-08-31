@@ -39,6 +39,9 @@ class _SignupScreenState extends State<SignupScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(
+                  height: 30,
+                ),
                 Container(
                     height: 200,
                     width: 200,

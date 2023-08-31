@@ -93,6 +93,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
           return AlertDialog(
             title: Text('Update'),
             content: Container(
+              height: 400,
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -282,7 +283,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
             child: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(
-                Icons.verified_user,
+                Icons.person,
                 color: Colors.green,
               ),
             ),

@@ -195,10 +195,11 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
     double percentage = (classestaken / classesHeld) * 100;
 
     if (percentage < 0) {
-      Utils().toastMessage('Percentage cannot be negative');
+      Utils().toastMessage('Classes held or classes taken cannot be negative');
       return;
     } else if (percentage > 100) {
-      Utils().toastMessage('Percentage cannot be greater than 100');
+      Utils()
+          .toastMessage('classes taken can not be greater than classes held');
       return;
     }
 

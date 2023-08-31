@@ -15,6 +15,7 @@ class FirestoreScreen extends StatefulWidget {
 class _FirestoreScreenState extends State<FirestoreScreen> {
   bool calculateClicked = false;
   final auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
 
   final classesHeldController = TextEditingController();
   final classesTaken = TextEditingController();
@@ -58,38 +59,76 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
           return AlertDialog(
             title: Text('Update'),
             content: Container(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: editController,
-                    decoration: InputDecoration(hintText: 'Edit here'),
-                  ),
-                  TextField(
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: false),
-                    controller: classesHeldController,
-                    decoration: InputDecoration(hintText: 'Edit here'),
-                  ),
-                  TextField(
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: false),
-                    controller: classesTaken,
-                    decoration: InputDecoration(hintText: 'Edit here'),
-                  ),
-                  TextField(
-                    controller: attendanceupdateController,
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                      icon: Icon(Icons.calculate),
-                      onPressed: () {
-                        updateAttendance();
-                        setState(() {
-                          calculateClicked = true;
-                        });
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: editController,
+                      decoration: InputDecoration(hintText: 'Edit here'),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'name is required';
+                        }
+                        return null;
                       },
-                    )),
-                  ),
-                ],
+                    ),
+                    TextFormField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: false),
+                      controller: classesHeldController,
+                      decoration: InputDecoration(hintText: 'Edit here'),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'This field can not be empty';
+                        }
+                        int? intValue = int.tryParse(value);
+                        if (intValue == null ||
+                            intValue.toDouble() != double.parse(value)) {
+                          return 'Classes taken can only be whole numbers';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: false),
+                      controller: classesTaken,
+                      decoration: InputDecoration(hintText: 'Edit here'),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'This field can not be empty';
+                        }
+                        int? intValue = int.tryParse(value);
+                        if (intValue == null ||
+                            intValue.toDouble() != double.parse(value)) {
+                          return 'Classes taken can only be whole numbers';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: attendanceupdateController,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.calculate),
+                          onPressed: () {
+                            updateAttendance();
+                            setState(() {
+                              calculateClicked = true;
+                            });
+                          },
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'This field is required';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
             actions: [
@@ -102,21 +141,23 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
               calculateClicked
                   ? TextButton(
                       onPressed: () async {
-                        try {
-                          Navigator.pop(context);
-                          await FirebaseFirestore.instance
-                              .collection('students')
-                              .doc(id)
-                              .update({
-                            'name': editController.text,
-                            'classheld': classesHeldController.text,
-                            'classtaken': classesTaken.text,
-                            'percentage': attendanceupdateController.text,
-                          });
-                          Utils().toastMessage('Updated');
-                          calculateClicked = false;
-                        } catch (error) {
-                          Utils().toastMessage(error.toString());
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            Navigator.pop(context);
+                            await FirebaseFirestore.instance
+                                .collection('students')
+                                .doc(id)
+                                .update({
+                              'name': editController.text,
+                              'classheld': classesHeldController.text,
+                              'classtaken': classesTaken.text,
+                              'percentage': attendanceupdateController.text,
+                            });
+                            Utils().toastMessage('Updated');
+                            calculateClicked = false;
+                          } catch (error) {
+                            Utils().toastMessage(error.toString());
+                          }
                         }
                       },
                       child: Text('Update'),

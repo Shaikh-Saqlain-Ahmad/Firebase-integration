@@ -64,6 +64,9 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                       if (value!.isEmpty) {
                         return 'Enter email';
                       }
+                      if (!value.contains('@')) {
+                        return 'Email must contain "@" symbol';
+                      }
                       return null;
                     },
                   ),

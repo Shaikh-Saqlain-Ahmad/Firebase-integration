@@ -18,8 +18,36 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
   final classesHeldController = TextEditingController();
   final classesTaken = TextEditingController();
   final attendanceController = TextEditingController();
+  String attendance = '';
 
   final firestore = FirebaseFirestore.instance.collection('students');
+  void verifyAttendance() {
+    int classestaken = int.tryParse(classesTaken.text) ?? 0;
+    int classesHeld = int.tryParse(classesHeldController.text) ?? 0;
+    if (classesTaken.text.contains('.') ||
+        classesHeldController.text.contains('.')) {
+      Utils().toastMessage(
+          'Please enter whole numbers for classes taken and classes held');
+      return;
+    }
+
+    if (classesHeld == 0) {
+      Utils().toastMessage('Total classes held cannot be 0');
+      return;
+    }
+
+    double percentage = (classestaken / classesHeld) * 100;
+
+    if (percentage < 0) {
+      Utils().toastMessage('Percentage cannot be negative');
+      return;
+    } else if (percentage > 100) {
+      Utils().toastMessage('Percentage cannot be greater than 100');
+      return;
+    }
+
+    attendance = percentage.toStringAsFixed(2);
+  }
 
   @override
   Widget build(BuildContext context) {

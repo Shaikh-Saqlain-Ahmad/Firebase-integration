@@ -21,6 +21,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
   final classesTaken = TextEditingController();
   final editController = TextEditingController();
   final attendanceupdateController = TextEditingController();
+  final searchFilter = TextEditingController();
   final firestore =
       FirebaseFirestore.instance.collection('students').snapshots();
   void updateAttendance() {
@@ -293,13 +294,25 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: TextFormField(
+              decoration: InputDecoration(
+                  hintText: 'Search Students', border: OutlineInputBorder()),
+              onChanged: (String value) {
+                setState(() {
+                  searchFilter.text = value;
+                });
+              },
+            ),
+          ),
           SizedBox(height: 20),
           StreamBuilder<QuerySnapshot>(
             stream: firestore,
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
                 return Text('Encountered some error');
@@ -312,24 +325,51 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                   color: Colors.grey,
                 ),
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(snapshot.data!.docs[index]['name'].toString()),
-                    subtitle: Text(
-                        snapshot.data!.docs[index]['percentage'].toString() +
-                            '%'),
-                    onTap: () {
-                      showMyDialog(
-                        snapshot.data!.docs[index]['name'].toString(),
-                        snapshot.data!.docs[index].id,
-                        snapshot.data!.docs[index]['classheld'].toString(),
-                        snapshot.data!.docs[index]['classtaken'].toString(),
-                        snapshot.data!.docs[index]['percentage'].toString(),
-                      );
-                    },
-                    onLongPress: () {
-                      showMyWarning(snapshot.data!.docs[index].id);
-                    },
-                  );
+                  final title = snapshot.data!.docs[index]['name'].toString();
+                  if (searchFilter.text.isEmpty) {
+                    return ListTile(
+                      title:
+                          Text(snapshot.data!.docs[index]['name'].toString()),
+                      subtitle: Text(
+                          snapshot.data!.docs[index]['percentage'].toString() +
+                              '%'),
+                      onTap: () {
+                        showMyDialog(
+                          snapshot.data!.docs[index]['name'].toString(),
+                          snapshot.data!.docs[index].id,
+                          snapshot.data!.docs[index]['classheld'].toString(),
+                          snapshot.data!.docs[index]['classtaken'].toString(),
+                          snapshot.data!.docs[index]['percentage'].toString(),
+                        );
+                      },
+                      onLongPress: () {
+                        showMyWarning(snapshot.data!.docs[index].id);
+                      },
+                    );
+                  } else if (title.toLowerCase().contains(
+                      searchFilter.text.toLowerCase().toLowerCase())) {
+                    return ListTile(
+                      title:
+                          Text(snapshot.data!.docs[index]['name'].toString()),
+                      subtitle: Text(
+                          snapshot.data!.docs[index]['percentage'].toString() +
+                              '%'),
+                      onTap: () {
+                        showMyDialog(
+                          snapshot.data!.docs[index]['name'].toString(),
+                          snapshot.data!.docs[index].id,
+                          snapshot.data!.docs[index]['classheld'].toString(),
+                          snapshot.data!.docs[index]['classtaken'].toString(),
+                          snapshot.data!.docs[index]['percentage'].toString(),
+                        );
+                      },
+                      onLongPress: () {
+                        showMyWarning(snapshot.data!.docs[index].id);
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
                 },
               ));
             },
